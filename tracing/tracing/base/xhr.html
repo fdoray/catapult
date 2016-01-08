@@ -57,9 +57,10 @@ tr.exportTo('tr.b', function() {
       return xhr('GET', url, true);
     var filename;
     if (url.startsWith('file:///'))
-      filename = url.substring(7);
+      filename = url.substring(8);
     else
       filename = global.hrefToAbsolutePath(url);
+
     var isBinary = guessBinary(url);
     return Promise.resolve().then(function() {
       if (isBinary)
@@ -73,7 +74,7 @@ tr.exportTo('tr.b', function() {
       return xhr('GET', url, false);
     var filename;
     if (url.startsWith('file:///'))
-      filename = url.substring(7);
+      filename = url.substring(8);
     else
       filename = global.hrefToAbsolutePath(url);
     var isBinary = guessBinary(url);

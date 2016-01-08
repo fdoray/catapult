@@ -56,12 +56,12 @@ def _GetBootStrapJsContent(source_paths):
   # Ensure that source paths are unique.
   source_paths = list(set(source_paths))
   source_path_string = json.dumps(source_paths)
-  bsc = bsc.replace('<%source_paths%>', source_path_string)
-  bsc = bsc.replace('<%current_working_directory%>', os.getcwd())
-  bsc = bsc.replace('<%path_utils_js_path%>', _PATH_UTILS_JS_DIR)
+  bsc = bsc.replace('<%source_paths%>', source_path_string.replace('\\', '\\\\'))
+  bsc = bsc.replace('<%current_working_directory%>', os.getcwd().replace('\\', '\\\\'))
+  bsc = bsc.replace('<%path_utils_js_path%>', _PATH_UTILS_JS_DIR.replace('\\', '\\\\'))
   bsc = bsc.replace('<%html_to_js_generator_js_path%>',
-                    _HTML_TO_JS_GENERATOR_JS_DIR)
-  bsc = bsc.replace('<%js_parser_path%>', _JS_PARSER_DIR)
+                    _HTML_TO_JS_GENERATOR_JS_DIR.replace('\\', '\\\\'))
+  bsc = bsc.replace('<%js_parser_path%>', _JS_PARSER_DIR.replace('\\', '\\\\'))
   bsc += '\n//@ sourceURL=%s\n' % _BOOTSTRAP_JS_DIR
   return bsc
 
@@ -80,6 +80,8 @@ def _GetD8BinaryPathForPlatform():
     return os.path.join(_V8_DIR, 'linux', 'x86_64', 'd8')
   elif platform.system() == 'Darwin' and platform.machine() == 'x86_64':
     return os.path.join(_V8_DIR, 'mac', 'x86_64', 'd8')
+  elif platform.system() == 'Windows':
+    return os.path.join(_V8_DIR, 'win', 'x86_64', 'd8.exe')
   else:
     raise NotImplementedError(
         'd8 binary for this platform and architecture is not yet supported')
@@ -137,9 +139,9 @@ def RunFile(file_path, source_paths=None, js_args=None, v8_args=None,
     with open(temp_boostrap_file, 'w') as f:
       f.write(_GetBootStrapJsContent(source_paths))
       if extension == '.html':
-        f.write('\nloadHTMLFile("%s", "%s");' % (abs_file_path, abs_file_path))
+        f.write('\nloadHTMLFile("%s", "%s");' % (abs_file_path.replace('\\', '\\\\'), abs_file_path.replace('\\', '\\\\')))
       else:
-        f.write('\nloadFile("%s");' % abs_file_path)
+        f.write('\nloadFile("%s");' % abs_file_path.replace('\\', '\\\\'))
     return _RunFileWithD8(temp_boostrap_file, js_args, v8_args, stdout, stdin)
   finally:
     shutil.rmtree(temp_dir)

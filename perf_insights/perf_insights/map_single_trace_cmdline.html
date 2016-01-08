@@ -16,6 +16,10 @@ tr.exportTo('pi', function() {
 
   var FailureValue = pi.v.FailureValue;
 
+  function changeDirectorySeparator(path) {
+    return path.replace(new RegExp('\\', 'g'), '/');
+  }
+
   function mapSingleTraceMain(args) {
     if (args.length !== 4)
       throw new Error('Must provide four arguments');
@@ -37,7 +41,7 @@ tr.exportTo('pi', function() {
 
           // Read the mapfile.
           try {
-            var traceData = tr.b.getSync('file://' + options.filenameToMap);
+            var traceData = tr.b.getSync('file:///' + options.filenameToMap);
           } catch (ex) {
             var err = new Error('Could not open ' + options.filenameToMap);
             err.name = 'TraceImportError';

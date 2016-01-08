@@ -216,6 +216,14 @@
 
   var sourcePaths = JSON.parse('<%source_paths%>');
 
+  function changeDirectorySeparator(path) {
+    return path.replace(new RegExp('/', 'g'), '\\');
+  }
+
+  function replaceAll(str, find, replace) {
+    return str.replace(new RegExp(find, 'g'), replace);
+  }
+
   global.hrefToAbsolutePath = function(href) {
     var pathPart;
     if (!d8_path_utils.isAbs(href)) {
@@ -224,6 +232,8 @@
     } else {
       pathPart = href.substring(1);
     }
+
+    href = changeDirectorySeparator(href)
 
     var candidates = [];
     for (var i = 0; i < sourcePaths.length; i++) {

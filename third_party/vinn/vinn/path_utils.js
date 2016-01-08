@@ -43,16 +43,17 @@
     },
 
     isAbs: function(a) {
-      return a[0] === '/';
+      return true;
+      //return a[0] === '/';
     },
 
     join: function(a, b) {
-      if (this.isAbs(b))
-        return b;
+      //if (this.isAbs(b))
+      //  return b;
 
       var res = a;
-      if (!a.endsWith('/'))
-        res += '/';
+      if (!a.endsWith('\\') && !b.startsWith('\\'))
+        res += '\\';
 
       res += b;
       return res;
